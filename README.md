@@ -19,6 +19,7 @@ https://www.alexedwards.net/blog/understanding-mutexes
 
 
 ### setup database for CHAPTER 4
+```bash
 docker run -p 3306:3306 --name snippetbox-mysql -e MYSQL_ROOT_PASSWORD=password -d mysql
 
 docker inspect snippetbox-mysql -f "{{json .NetworkSettings.Networks.bridge.Gateway }}"
@@ -37,7 +38,6 @@ expires DATETIME NOT NULL
 
 CREATE INDEX idx_snippets_created ON snippets(created);
 
--- Add some dummy records (which we'll use in the next couple of chapters).
 INSERT INTO snippets (title, content, created, expires) VALUES (
 'An old silent pond',
 'An old silent pond...\nA frog jumps into the pond,\nsplash! Silence again.\n\n– Matsuo Bashō', UTC_TIMESTAMP(),
@@ -54,18 +54,18 @@ INSERT INTO snippets (title, content, created, expires) VALUES (
 DATE_ADD(UTC_TIMESTAMP(), INTERVAL 7 DAY)
 );
 
-<!-- Create a User -->
 CREATE USER 'web'@'172.17.0.1';
-<!-- GRANT SELECT, INSERT, UPDATE ON snippetbox.* TO 'web'@'localhost'; -->
+#  GRANT SELECT, INSERT, UPDATE ON snippetbox.* TO 'web'@'localhost'; 
 GRANT SELECT, INSERT, UPDATE ON snippetbox.* TO 'web'@'172.17.0.1';
 
--- Important: Make sure to swap 'pass' with a password of your own choosing.
+# -- Important: Make sure to swap 'pass' with a password of your own choosing.
 ALTER USER 'web'@'172.17.0.1' IDENTIFIED BY 'pass';
 
-TEST: 
+# TEST: 
 docker exec -it snippetbox-mysql bash
 mysql -D snippetbox -u web -ppass
 SELECT id, title, expires FROM snippets;
+```
 
 ### GO
 set ip in DSN! 
